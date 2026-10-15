@@ -26,6 +26,9 @@ public class MainActivity extends AppCompatActivity {
     private LinearLayout wardenLoginSection;
     private LinearLayout wardenDashboardSection;
     private LinearLayout wardenDetailSection;
+    private LinearLayout facultyLoginSection;
+    private LinearLayout facultySection;
+    private LinearLayout facultyDetailSection;
     private String selectedCategory = "";
     private String currentWardenName = "";
     private long currentComplaintId = -1;
@@ -44,6 +47,9 @@ public class MainActivity extends AppCompatActivity {
         wardenLoginSection = findViewById(R.id.wardenLoginSection);
         wardenDashboardSection = findViewById(R.id.wardenDashboardSection);
         wardenDetailSection = findViewById(R.id.wardenDetailSection);
+        facultyLoginSection = findViewById(R.id.facultyLoginSection);
+        facultySection = findViewById(R.id.facultySection);
+        facultyDetailSection = findViewById(R.id.facultyDetailSection);
 
         Spinner branch = findViewById(R.id.branchSpinner);
         ArrayAdapter<CharSequence> branchAdapter = ArrayAdapter.createFromResource(this,
@@ -60,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.studentOption).setOnClickListener(v -> showSection(studentSection));
         findViewById(R.id.checkStatusButton).setOnClickListener(v -> showSection(statusSection));
         findViewById(R.id.wardenOption).setOnClickListener(v -> showSection(wardenLoginSection));
+        findViewById(R.id.facultyOption).setOnClickListener(v -> showSection(facultyLoginSection));
         findViewById(R.id.studentNextButton).setOnClickListener(v -> validateStudentDetails());
         findViewById(R.id.backToStudentButton).setOnClickListener(v -> showSection(studentSection));
         findViewById(R.id.backToCategoriesButton).setOnClickListener(v -> showSection(categorySection));
@@ -70,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.wardenLogoutButton).setOnClickListener(v -> showSection(homeSection));
         findViewById(R.id.statusSearchButton).setOnClickListener(v -> loadStudentComplaints());
         findViewById(R.id.wardenBackButton).setOnClickListener(v -> showSection(wardenDashboardSection));
+        findViewById(R.id.resolveComplaintButton).setOnClickListener(v -> resolveCurrentComplaint());
 
         int[] categoryButtons = {R.id.hostelOption, R.id.messOption, R.id.theftOption,
                 R.id.staffBehaviorOption, R.id.academicsOption};
@@ -87,6 +95,10 @@ public class MainActivity extends AppCompatActivity {
 
         findViewById(R.id.postButton).setOnClickListener(v -> saveStudentComplaint());
         findViewById(R.id.wardenRefreshButton).setOnClickListener(v -> loadWardenComplaints());
+        findViewById(R.id.facultyEnterButton).setOnClickListener(v -> facultyLogin());
+        findViewById(R.id.facultySearchButton).setOnClickListener(v -> loadFacultyComplaints());
+        findViewById(R.id.facultyLogoutButton).setOnClickListener(v -> showSection(homeSection));
+        findViewById(R.id.facultyBackButton).setOnClickListener(v -> showSection(facultySection));
     }
 
     private void validateStudentDetails() {
@@ -187,6 +199,7 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         password.setText("");
+        database.recordWardenLogin(currentWardenName, System.currentTimeMillis());
         loadWardenComplaints();
         showSection(wardenDashboardSection);
     }
@@ -228,10 +241,28 @@ public class MainActivity extends AppCompatActivity {
                     "Category: " + cursor.getString(cursor.getColumnIndexOrThrow("category")) + "\n\n" +
                     cursor.getString(cursor.getColumnIndexOrThrow("description"));
             ((TextView) findViewById(R.id.wardenComplaintDetails)).setText(details);
+            ((EditText) findViewById(R.id.wardenReplyInput)).setText("");
             showSection(wardenDetailSection);
         } finally {
             cursor.close();
         }
+    }
+
+    private void resolveCurrentComplaint() {
+        EditText replyInput = findViewById(R.id.wardenReplyInput);
+        String reply = replyInput.getText().toString().trim();
+        if (reply.isEmpty()) {
+            replyInput.setError("Enter the action taken before resolving");
+            return;
+        }
+        if (database.resolveComplaint(currentComplaintId, currentWardenName, reply,
+                System.currentTimeMillis())) {
+            Toast.makeText(this, "Complaint resolved", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "This complaint is no longer pending", Toast.LENGTH_SHORT).show();
+        }
+        loadWardenComplaints();
+        showSection(wardenDashboardSection);
     }
 
     private void addMessage(LinearLayout list, String message) {
@@ -243,6 +274,83 @@ public class MainActivity extends AppCompatActivity {
         list.addView(row);
     }
 
+    private void facultyLogin() {
+        EditText name = findViewById(R.id.facultyNameInput);
+        EditText password = findViewById(R.id.facultyPasswordInput);
+        if (name.getText().toString().trim().isEmpty()) {
+            name.setError("Enter your name");
+            return;
+        }
+        if (!password.getText().toString().equals("faculty1234")) {
+            password.setError("Incorrect password");
+            return;
+        }
+        password.setText("");
+        ((EditText) findViewById(R.id.facultySearchInput)).setText("");
+        loadFacultyComplaints();
+        showSection(facultySection);
+    }
+
+    private void loadFacultyComplaints() {
+        String searchText = ((EditText) findViewById(R.id.facultySearchInput))
+                .getText().toString().trim();
+        LinearLayout list = findViewById(R.id.facultyComplaintList);
+        list.removeAllViews();
+
+        long latestLogin = database.getLatestWardenLoginTime();
+        String loginLabel = latestLogin == 0 ? "Not recorded" :
+                DateFormat.getDateTimeInstance().format(new Date(latestLogin));
+        ((TextView) findViewById(R.id.facultyLatestLogin))
+                .setText("Latest warden login: " + loginLabel);
+
+        Cursor cursor = searchText.isEmpty()
+                ? database.getAllComplaints() : database.searchAllComplaints(searchText);
+        try {
+            if (!cursor.moveToFirst()) {
+                addMessage(list, searchText.isEmpty()
+                        ? "No complaints have been submitted."
+                        : "No complaints match your search.");
+                return;
+            }
+            do {
+                long complaintId = cursor.getLong(cursor.getColumnIndexOrThrow("id"));
+                String studentName = cursor.getString(cursor.getColumnIndexOrThrow("student_name"));
+                String category = cursor.getString(cursor.getColumnIndexOrThrow("category"));
+                String status = cursor.getString(cursor.getColumnIndexOrThrow("status"));
+                Button row = new Button(this);
+                row.setText(studentName + " • " + category + " • " + status);
+                row.setOnClickListener(v -> openFacultyComplaint(complaintId));
+                list.addView(row);
+            } while (cursor.moveToNext());
+        } finally {
+            cursor.close();
+        }
+    }
+
+    private void openFacultyComplaint(long complaintId) {
+        Cursor cursor = database.getComplaint(complaintId);
+        try {
+            if (!cursor.moveToFirst()) return;
+            String wardenName = cursor.getString(cursor.getColumnIndexOrThrow("warden_name"));
+            String reply = cursor.getString(cursor.getColumnIndexOrThrow("warden_reply"));
+            String details = "Reference #" + complaintId + "\n" +
+                    "Student: " + cursor.getString(cursor.getColumnIndexOrThrow("student_name")) + "\n" +
+                    "SAP ID: " + cursor.getString(cursor.getColumnIndexOrThrow("sap_id")) + "\n" +
+                    "Branch: " + cursor.getString(cursor.getColumnIndexOrThrow("branch")) + "\n" +
+                    "Year: " + cursor.getString(cursor.getColumnIndexOrThrow("year")) + "\n" +
+                    "Phone: " + cursor.getString(cursor.getColumnIndexOrThrow("phone")) + "\n" +
+                    "Category: " + cursor.getString(cursor.getColumnIndexOrThrow("category")) + "\n" +
+                    "Status: " + cursor.getString(cursor.getColumnIndexOrThrow("status")) + "\n" +
+                    "Warden: " + (wardenName == null ? "Not assigned" : wardenName) + "\n" +
+                    "Warden response: " + (reply == null || reply.isEmpty() ? "None" : reply) +
+                    "\n\n" + cursor.getString(cursor.getColumnIndexOrThrow("description"));
+            ((TextView) findViewById(R.id.facultyComplaintDetails)).setText(details);
+            showSection(facultyDetailSection);
+        } finally {
+            cursor.close();
+        }
+    }
+
     private void showSection(LinearLayout selected) {
         homeSection.setVisibility(View.GONE);
         studentSection.setVisibility(View.GONE);
@@ -252,6 +360,9 @@ public class MainActivity extends AppCompatActivity {
         wardenLoginSection.setVisibility(View.GONE);
         wardenDashboardSection.setVisibility(View.GONE);
         wardenDetailSection.setVisibility(View.GONE);
+        facultyLoginSection.setVisibility(View.GONE);
+        facultySection.setVisibility(View.GONE);
+        facultyDetailSection.setVisibility(View.GONE);
         selected.setVisibility(View.VISIBLE);
     }
 }
