@@ -1,6 +1,13 @@
 package com.sagar.svkmcomplainttracker;
 
+import android.Manifest;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Intent;
 import android.database.Cursor;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -12,11 +19,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 import java.text.DateFormat;
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
+    private static final String NOTIFICATION_CHANNEL_ID = "svkm_complaint_updates";
+    private static final int NOTIFICATION_PERMISSION_REQUEST = 10;
     private Database1 database;
     private LinearLayout homeSection;
     private LinearLayout studentSection;
@@ -38,6 +49,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        createNotificationChannel();
+        requestNotificationPermission();
         database = new Database1(this);
         homeSection = findViewById(R.id.homeSection);
         studentSection = findViewById(R.id.studentSection);
@@ -257,12 +270,52 @@ public class MainActivity extends AppCompatActivity {
         }
         if (database.resolveComplaint(currentComplaintId, currentWardenName, reply,
                 System.currentTimeMillis())) {
+            notifyStudentComplaintResolved(currentComplaintId);
             Toast.makeText(this, "Complaint resolved", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(this, "This complaint is no longer pending", Toast.LENGTH_SHORT).show();
         }
         loadWardenComplaints();
         showSection(wardenDashboardSection);
+    }
+
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(NOTIFICATION_CHANNEL_ID,
+                    "Complaint updates", NotificationManager.IMPORTANCE_DEFAULT);
+            channel.setDescription("Updates when a complaint is resolved");
+            NotificationManager manager = getSystemService(NotificationManager.class);
+            if (manager != null) manager.createNotificationChannel(channel);
+        }
+    }
+
+    private void requestNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= 33 &&
+                checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) !=
+                        PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.POST_NOTIFICATIONS},
+                    NOTIFICATION_PERMISSION_REQUEST);
+        }
+    }
+
+    private void notifyStudentComplaintResolved(long complaintId) {
+        if (Build.VERSION.SDK_INT >= 33 &&
+                checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) !=
+                        PackageManager.PERMISSION_GRANTED) return;
+
+        Intent openApp = new Intent(this, MainActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, (int) complaintId,
+                openApp, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        NotificationCompat.Builder notification = new NotificationCompat.Builder(this,
+                NOTIFICATION_CHANNEL_ID)
+                .setSmallIcon(android.R.drawable.ic_dialog_info)
+                .setContentTitle("Complaint resolved")
+                .setContentText("A response is available for complaint #" + complaintId + ".")
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+        NotificationManagerCompat.from(this).notify((int) (complaintId & 0x7fffffff),
+                notification.build());
     }
 
     private void addMessage(LinearLayout list, String message) {
