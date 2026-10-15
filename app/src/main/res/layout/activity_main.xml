@@ -1,498 +1,691 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFF8F7"
-    android:fillViewport="true">
+    android:background="#FFFFFF"
+    tools:context=".MainActivity">
 
     <LinearLayout
+        android:id="@+id/main"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:background="#FFFFFF"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="12dp"
+            android:paddingEnd="16dp">
+
+            <ImageButton
+                android:id="@+id/backButton"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Go back"
+                android:src="@drawable/abc_ic_ab_back_material"
+                app:tint="#B71C1C" />
+
+            <ImageButton
+                android:id="@+id/menuButton"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Open menu"
+                android:src="@android:drawable/ic_menu_sort_by_size"
+                app:tint="#B71C1C" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+
+            <ImageView
+                android:layout_width="145dp"
+                android:layout_height="76dp"
+                android:layout_marginTop="8dp"
+                android:contentDescription="SVKM logo"
+                android:scaleType="fitCenter"
+                android:src="@drawable/svkm_logo" />
+        </LinearLayout>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:fillViewport="true">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="20dp">
+
+                <!-- Home section -->
+                <LinearLayout
+                    android:id="@+id/homeSection"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="top|center_horizontal"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="28dp"
+                        android:layout_marginBottom="28dp"
+                        android:gravity="center"
+                        android:text="SVKM Complaint Tracker"
+                        android:textColor="#000000"
+                        android:textSize="28sp"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/studentOption"
+                        android:layout_width="match_parent"
+                        android:layout_height="58dp"
+                        android:layout_marginBottom="14dp"
+                        android:backgroundTint="#B71C1C"
+                        android:text="Student"
+                        android:textColor="#FFFFFF"
+                        android:textSize="17sp" />
+
+                    <Button
+                        android:id="@+id/facultyOption"
+                        android:layout_width="match_parent"
+                        android:layout_height="58dp"
+                        android:layout_marginBottom="14dp"
+                        android:backgroundTint="#B71C1C"
+                        android:text="Faculty"
+                        android:textColor="#FFFFFF"
+                        android:textSize="17sp" />
+
+                    <Button
+                        android:id="@+id/wardenOption"
+                        android:layout_width="match_parent"
+                        android:layout_height="58dp"
+                        android:backgroundTint="#B71C1C"
+                        android:text="Warden"
+                        android:textColor="#FFFFFF"
+                        android:textSize="17sp" />
+                </LinearLayout>
+
+                <!-- Student details section -->
+                <LinearLayout
+                    android:id="@+id/studentSection"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:text="Student Information"
+                        android:textColor="#B71C1C"
+                        android:textSize="23sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Student Name"
+                        android:textColor="#000000"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <EditText
+                        android:id="@+id/studentNameInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="20dp"
+                        android:minHeight="56dp"
+                        android:hint="Enter student name"
+                        android:inputType="textPersonName"
+                        android:singleLine="true" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Student SAP ID"
+                        android:textColor="#000000"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <EditText
+                        android:id="@+id/sapIdInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="20dp"
+                        android:minHeight="56dp"
+                        android:hint="Enter student SAP ID"
+                        android:inputType="text"
+                        android:singleLine="true" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Student Branch"
+                        android:textColor="#000000"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <Spinner
+                        android:id="@+id/branchSpinner"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:layout_marginBottom="20dp"
+                        android:entries="@array/student_branches" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Year"
+                        android:textColor="#000000"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <Spinner
+                        android:id="@+id/yearSpinner"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:layout_marginBottom="20dp"
+                        android:entries="@array/student_years" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Student Phone Number"
+                        android:textColor="#000000"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <EditText
+                        android:id="@+id/phoneInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="20dp"
+                        android:minHeight="56dp"
+                        android:hint="Enter phone number"
+                        android:inputType="phone"
+                        android:digits="0123456789"
+                        android:singleLine="true"
+                        android:maxLength="10" />
+
+                    <Button
+                        android:id="@+id/checkStatusButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:backgroundTint="#FFFFFF"
+                        android:text="Check Complaint Status"
+                        android:textColor="#B71C1C" />
+
+                    <Button
+                        android:id="@+id/studentNextButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end|bottom"
+                        android:layout_marginTop="20dp"
+                        android:backgroundTint="#B71C1C"
+                        android:text="Next"
+                        android:textColor="#FFFFFF" />
+                </LinearLayout>
+
+                <!-- Complaint category section -->
+                <LinearLayout
+                    android:id="@+id/categorySection"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="18dp"
+                        android:text="Select a problem"
+                        android:textColor="#B71C1C"
+                        android:textSize="23sp"
+                        android:textStyle="bold" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+                        <Button
+                            android:id="@+id/hostelOption"
+                            android:layout_width="0dp"
+                            android:layout_height="145dp"
+                            android:layout_margin="6dp"
+                            android:layout_weight="1"
+                            android:backgroundTint="#B71C1C"
+                            android:text="Hostel"
+                            android:textColor="#FFFFFF" />
+                        <Button
+                            android:id="@+id/messOption"
+                            android:layout_width="0dp"
+                            android:layout_height="145dp"
+                            android:layout_margin="6dp"
+                            android:layout_weight="1"
+                            android:backgroundTint="#B71C1C"
+                            android:text="Mess"
+                            android:textColor="#FFFFFF" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+                        <Button
+                            android:id="@+id/theftOption"
+                            android:layout_width="0dp"
+                            android:layout_height="145dp"
+                            android:layout_margin="6dp"
+                            android:layout_weight="1"
+                            android:backgroundTint="#B71C1C"
+                            android:text="Theft Complaint"
+                            android:textColor="#FFFFFF" />
+                        <Button
+                            android:id="@+id/staffBehaviorOption"
+                            android:layout_width="0dp"
+                            android:layout_height="145dp"
+                            android:layout_margin="6dp"
+                            android:layout_weight="1"
+                            android:backgroundTint="#B71C1C"
+                            android:text="Staff Behavior"
+                            android:textColor="#FFFFFF" />
+                    </LinearLayout>
+                    <Button
+                        android:id="@+id/academicsOption"
+                        android:layout_width="145dp"
+                        android:layout_height="145dp"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_margin="6dp"
+                        android:backgroundTint="#B71C1C"
+                        android:text="Academics Problem"
+                        android:textColor="#FFFFFF" />
+                </LinearLayout>
+
+                <!-- Complaint description section -->
+                <LinearLayout
+                    android:id="@+id/descriptionSection"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/complaintTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="18dp"
+                        android:text="Complaint Description"
+                        android:textColor="#B71C1C"
+                        android:textSize="23sp"
+                        android:textStyle="bold" />
+
+                    <EditText
+                        android:id="@+id/complaintDescriptionInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="180dp"
+                        android:gravity="top|start"
+                        android:hint="Describe the problem"
+                        android:inputType="textMultiLine|textCapSentences"
+                        android:minHeight="180dp"
+                        android:padding="12dp" />
+
+                    <Button
+                        android:id="@+id/postButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:layout_marginTop="18dp"
+                        android:backgroundTint="#B71C1C"
+                        android:text="Post"
+                        android:textColor="#FFFFFF" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/studentStatusSection"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Check Complaint Status"
+                        android:textColor="#B71C1C"
+                        android:textSize="23sp"
+                        android:textStyle="bold" />
+                    <EditText
+                        android:id="@+id/statusSapInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:hint="Enter your SAP ID"
+                        android:inputType="text"
+                        android:singleLine="true" />
+                    <Button
+                        android:id="@+id/statusSearchButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:backgroundTint="#B71C1C"
+                        android:text="Show My Complaints"
+                        android:textColor="#FFFFFF" />
+                    <LinearLayout
+                        android:id="@+id/studentStatusList"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/wardenLoginSection"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Warden Login"
+                        android:textColor="#B71C1C"
+                        android:textSize="23sp"
+                        android:textStyle="bold" />
+                    <EditText
+                        android:id="@+id/wardenNameInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:hint="Warden Name"
+                        android:inputType="textPersonName"
+                        android:singleLine="true" />
+                    <EditText
+                        android:id="@+id/wardenPasswordInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:hint="Password"
+                        android:inputType="textPassword"
+                        android:singleLine="true" />
+                    <Button
+                        android:id="@+id/wardenEnterButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="18dp"
+                        android:backgroundTint="#B71C1C"
+                        android:text="Enter"
+                        android:textColor="#FFFFFF" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/wardenDashboardSection"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Unresolved Complaints"
+                        android:textColor="#B71C1C"
+                        android:textSize="23sp"
+                        android:textStyle="bold" />
+                    <Button
+                        android:id="@+id/wardenLogButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:backgroundTint="#B71C1C"
+                        android:text="Resolved Complaints Log"
+                        android:textColor="#FFFFFF" />
+                    <EditText
+                        android:id="@+id/wardenSearchInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:hint="Search name, SAP ID, or category"
+                        android:inputType="text"
+                        android:singleLine="true" />
+                    <Button
+                        android:id="@+id/wardenSearchButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="#B71C1C"
+                        android:text="Search Complaints"
+                        android:textColor="#FFFFFF" />
+                    <LinearLayout
+                        android:id="@+id/wardenComplaintList"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" />
+                    <Button
+                        android:id="@+id/wardenLogoutButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:backgroundTint="#B71C1C"
+                        android:text="Log Out"
+                        android:textColor="#FFFFFF" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/wardenLogSection"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="My Resolved Complaints"
+                        android:textColor="#B71C1C"
+                        android:textSize="23sp"
+                        android:textStyle="bold" />
+                    <LinearLayout
+                        android:id="@+id/wardenLogList"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/wardenDetailSection"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Complaint Details"
+                        android:textColor="#B71C1C"
+                        android:textSize="23sp"
+                        android:textStyle="bold" />
+                    <TextView
+                        android:id="@+id/wardenComplaintDetails"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:textColor="#000000"
+                        android:textSize="16sp" />
+                    <EditText
+                        android:id="@+id/wardenReplyInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="140dp"
+                        android:layout_marginTop="16dp"
+                        android:gravity="top|start"
+                        android:hint="Describe the action taken"
+                        android:inputType="textMultiLine|textCapSentences"
+                        android:padding="12dp" />
+                    <Button
+                        android:id="@+id/resolveButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="14dp"
+                        android:backgroundTint="#B71C1C"
+                        android:enabled="false"
+                        android:text="Resolve"
+                        android:textColor="#FFFFFF" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/facultyLoginSection"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Faculty Login"
+                        android:textColor="#B71C1C"
+                        android:textSize="23sp"
+                        android:textStyle="bold" />
+                    <EditText
+                        android:id="@+id/facultyNameInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:hint="Faculty Name"
+                        android:inputType="textPersonName"
+                        android:singleLine="true" />
+                    <EditText
+                        android:id="@+id/facultyPasswordInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:hint="Password"
+                        android:inputType="textPassword"
+                        android:singleLine="true" />
+                    <Button
+                        android:id="@+id/facultyNextButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="18dp"
+                        android:backgroundTint="#B71C1C"
+                        android:text="Next"
+                        android:textColor="#FFFFFF" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/facultySection"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Faculty Supervision"
+                        android:textColor="#B71C1C"
+                        android:textSize="23sp"
+                        android:textStyle="bold" />
+                    <TextView
+                        android:id="@+id/facultyLatestLogin"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:textColor="#000000"
+                        android:textSize="14sp" />
+                    <EditText
+                        android:id="@+id/facultySearchInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:hint="Search name, SAP ID, category, or warden"
+                        android:inputType="text"
+                        android:singleLine="true" />
+                    <Button
+                        android:id="@+id/facultySearchButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="#B71C1C"
+                        android:text="Search Complaints"
+                        android:textColor="#FFFFFF" />
+                    <LinearLayout
+                        android:id="@+id/facultyComplaintList"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" />
+                    <Button
+                        android:id="@+id/facultyLogoutButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:backgroundTint="#B71C1C"
+                        android:text="Log Out"
+                        android:textColor="#FFFFFF" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/facultyDetailSection"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Complaint Overview"
+                        android:textColor="#B71C1C"
+                        android:textSize="23sp"
+                        android:textStyle="bold" />
+                    <TextView
+                        android:id="@+id/facultyComplaintDetails"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="14dp"
+                        android:textColor="#000000"
+                        android:textSize="16sp" />
+                </LinearLayout>
+
+            </FrameLayout>
+        </ScrollView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/navigationDrawer"
+        android:layout_width="300dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="#FFFFFF"
+        android:elevation="8dp"
         android:orientation="vertical"
-        android:padding="24dp">
+        android:padding="20dp">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="22dp"
-            android:text="SVKM COMPLAINT TRACKER"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="24dp"
+            android:text="SVKM Complaint Tracker"
             android:textColor="#B71C1C"
-            android:textSize="22sp"
+            android:textSize="20sp"
             android:textStyle="bold" />
 
-        <LinearLayout
-            android:id="@+id/homeSection"
+        <TextView
+            android:id="@+id/signInMicrosoft"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="52dp"
+            android:background="?attr/selectableItemBackground"
+            android:gravity="center_vertical"
+            android:paddingStart="12dp"
+            android:text="Sign in with Microsoft"
+            android:textColor="#B71C1C"
+            android:textSize="16sp" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="How can we help you today?"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
-            <Button
-                android:id="@+id/studentOption"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:backgroundTint="#B71C1C"
-                android:text="Submit a student complaint"
-                android:textColor="#FFFFFF" />
-            <Button
-                android:id="@+id/checkStatusButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Check complaint status" />
-            <Button
-                android:id="@+id/wardenOption"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Warden sign in" />
-            <Button
-                android:id="@+id/facultyOption"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Faculty supervision" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/studentSection"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="gone">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Student details"
-                android:textColor="#B71C1C"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
-            <EditText
-                android:id="@+id/studentNameInput"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Full name"
-                android:inputType="textPersonName"
-                android:singleLine="true" />
-
-            <EditText
-                android:id="@+id/sapIdInput"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="SAP ID"
-                android:inputType="text" />
-
-            <EditText
-                android:id="@+id/phoneInput"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="10 digit phone number"
-                android:inputType="phone"
-                android:maxLength="10"
-                android:singleLine="true" />
-
-            <Spinner
-                android:id="@+id/branchSpinner"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-            <Spinner
-                android:id="@+id/yearSpinner"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-            <Button
-                android:id="@+id/studentNextButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="18dp"
-                android:backgroundTint="#B71C1C"
-                android:text="Continue"
-                android:textColor="#FFFFFF" />
-
-            <Button
-                android:id="@+id/backToHomeButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Back" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/categorySection"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="gone">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Choose a complaint category"
-                android:textColor="#B71C1C"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
-            <Button android:id="@+id/hostelOption" style="@style/ComplaintCategoryButton" android:text="Hostel" />
-            <Button android:id="@+id/messOption" style="@style/ComplaintCategoryButton" android:text="Mess" />
-            <Button android:id="@+id/theftOption" style="@style/ComplaintCategoryButton" android:text="Theft Complaint" />
-            <Button android:id="@+id/staffBehaviorOption" style="@style/ComplaintCategoryButton" android:text="Staff Behavior" />
-            <Button android:id="@+id/academicsOption" style="@style/ComplaintCategoryButton" android:text="Academics Problem" />
-
-            <Button
-                android:id="@+id/backToStudentButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Back" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/descriptionSection"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="gone">
-
-            <TextView
-                android:id="@+id/complaintTitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="#B71C1C"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
-            <EditText
-                android:id="@+id/complaintDescriptionInput"
-                android:layout_width="match_parent"
-                android:layout_height="160dp"
-                android:gravity="top|start"
-                android:hint="Describe your complaint"
-                android:inputType="textCapSentences|textMultiLine"
-                android:padding="12dp" />
-
-            <Button
-                android:id="@+id/postButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:backgroundTint="#B71C1C"
-                android:text="Review complaint"
-                android:textColor="#FFFFFF" />
-
-            <Button
-                android:id="@+id/backToCategoriesButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Back to categories" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/statusSection"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="gone">
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Check complaint status"
-                android:textColor="#B71C1C"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-            <EditText
-                android:id="@+id/statusSapInput"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Enter your SAP ID"
-                android:inputType="text"
-                android:singleLine="true" />
-            <Button
-                android:id="@+id/statusSearchButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:backgroundTint="#B71C1C"
-                android:text="Find my complaints"
-                android:textColor="#FFFFFF" />
-            <LinearLayout
-                android:id="@+id/studentStatusList"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical" />
-            <Button
-                android:id="@+id/backToHomeFromStatusButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Back" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/wardenLoginSection"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="gone">
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Warden sign in"
-                android:textColor="#B71C1C"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-            <EditText
-                android:id="@+id/wardenNameInput"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Warden name"
-                android:inputType="textPersonName"
-                android:singleLine="true" />
-            <EditText
-                android:id="@+id/wardenPasswordInput"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Password"
-                android:inputType="textPassword"
-                android:singleLine="true" />
-            <Button
-                android:id="@+id/wardenEnterButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:backgroundTint="#B71C1C"
-                android:text="Sign in"
-                android:textColor="#FFFFFF" />
-            <Button
-                android:id="@+id/backToHomeFromWardenButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Back" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/wardenDashboardSection"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="gone">
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Pending complaints"
-                android:textColor="#B71C1C"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-            <LinearLayout
-                android:id="@+id/wardenComplaintList"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical" />
-            <Button
-                android:id="@+id/wardenRefreshButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Refresh" />
-            <Button
-                android:id="@+id/wardenLogButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Resolved complaint history" />
-            <Button
-                android:id="@+id/wardenLogoutButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Sign out" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/wardenDetailSection"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="gone">
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Complaint details"
-                android:textColor="#B71C1C"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-            <TextView
-                android:id="@+id/wardenComplaintDetails"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:textColor="#222222"
-                android:textSize="16sp" />
-            <EditText
-                android:id="@+id/wardenReplyInput"
-                android:layout_width="match_parent"
-                android:layout_height="120dp"
-                android:layout_marginTop="12dp"
-                android:gravity="top|start"
-                android:hint="Describe the action taken"
-                android:inputType="textCapSentences|textMultiLine"
-                android:padding="12dp" />
-            <Button
-                android:id="@+id/resolveComplaintButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:backgroundTint="#B71C1C"
-                android:text="Resolve complaint"
-                android:textColor="#FFFFFF" />
-            <Button
-                android:id="@+id/wardenBackButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Back to pending complaints" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/wardenLogSection"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="gone">
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Resolved complaint history"
-                android:textColor="#B71C1C"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:text="Resolved items leave the active list after 48 hours; this history is retained."
-                android:textColor="#555555"
-                android:textSize="14sp" />
-            <LinearLayout
-                android:id="@+id/wardenLogList"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical" />
-            <Button
-                android:id="@+id/wardenLogBackButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Back to dashboard" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/facultyLoginSection"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="gone">
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Faculty sign in"
-                android:textColor="#B71C1C"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-            <EditText
-                android:id="@+id/facultyNameInput"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Faculty name"
-                android:inputType="textPersonName"
-                android:singleLine="true" />
-            <EditText
-                android:id="@+id/facultyPasswordInput"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Password"
-                android:inputType="textPassword"
-                android:singleLine="true" />
-            <Button
-                android:id="@+id/facultyEnterButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:backgroundTint="#B71C1C"
-                android:text="Sign in"
-                android:textColor="#FFFFFF" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/facultySection"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="gone">
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Faculty complaint overview"
-                android:textColor="#B71C1C"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-            <TextView
-                android:id="@+id/facultyLatestLogin"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:textColor="#222222"
-                android:textSize="14sp" />
-            <EditText
-                android:id="@+id/facultySearchInput"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Search name, SAP ID, category, or warden"
-                android:inputType="text"
-                android:singleLine="true" />
-            <Button
-                android:id="@+id/facultySearchButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:backgroundTint="#B71C1C"
-                android:text="Search complaints"
-                android:textColor="#FFFFFF" />
-            <LinearLayout
-                android:id="@+id/facultyComplaintList"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical" />
-            <Button
-                android:id="@+id/facultyLogoutButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Sign out" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/facultyDetailSection"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="gone">
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Complaint overview"
-                android:textColor="#B71C1C"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-            <TextView
-                android:id="@+id/facultyComplaintDetails"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:textColor="#222222"
-                android:textSize="16sp" />
-            <Button
-                android:id="@+id/facultyBackButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Back to complaints" />
-        </LinearLayout>
     </LinearLayout>
-</ScrollView>
+
+</androidx.drawerlayout.widget.DrawerLayout>
