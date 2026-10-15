@@ -4,6 +4,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -17,30 +18,59 @@ import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
     private Database1 database;
-    private LinearLayout[] sections;
+    private LinearLayout homeSection;
+    private LinearLayout studentSection;
+    private LinearLayout categorySection;
+    private LinearLayout descriptionSection;
+    private LinearLayout statusSection;
+    private LinearLayout wardenLoginSection;
+    private LinearLayout wardenDashboardSection;
+    private LinearLayout wardenDetailSection;
     private String selectedCategory = "";
+    private String currentWardenName = "";
+    private long currentComplaintId = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         database = new Database1(this);
+        homeSection = findViewById(R.id.homeSection);
+        studentSection = findViewById(R.id.studentSection);
+        categorySection = findViewById(R.id.categorySection);
+        descriptionSection = findViewById(R.id.descriptionSection);
+        statusSection = findViewById(R.id.statusSection);
+        wardenLoginSection = findViewById(R.id.wardenLoginSection);
+        wardenDashboardSection = findViewById(R.id.wardenDashboardSection);
+        wardenDetailSection = findViewById(R.id.wardenDetailSection);
 
-        sections = new LinearLayout[]{findViewById(R.id.homeSection),
-                findViewById(R.id.studentSection), findViewById(R.id.categorySection),
-                findViewById(R.id.descriptionSection), findViewById(R.id.statusSection)};
+        Spinner branch = findViewById(R.id.branchSpinner);
+        ArrayAdapter<CharSequence> branchAdapter = ArrayAdapter.createFromResource(this,
+                R.array.student_branches, android.R.layout.simple_spinner_item);
+        branchAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        branch.setAdapter(branchAdapter);
 
-        setupSpinner(R.id.branchSpinner, R.array.student_branches);
-        setupSpinner(R.id.yearSpinner, R.array.student_years);
+        Spinner year = findViewById(R.id.yearSpinner);
+        ArrayAdapter<CharSequence> yearAdapter = ArrayAdapter.createFromResource(this,
+                R.array.student_years, android.R.layout.simple_spinner_item);
+        yearAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        year.setAdapter(yearAdapter);
 
-        findViewById(R.id.studentOption).setOnClickListener(v -> showSection(1));
-        findViewById(R.id.checkStatusButton).setOnClickListener(v -> showSection(4));
+        findViewById(R.id.studentOption).setOnClickListener(v -> showSection(studentSection));
+        findViewById(R.id.checkStatusButton).setOnClickListener(v -> showSection(statusSection));
+        findViewById(R.id.wardenOption).setOnClickListener(v -> showSection(wardenLoginSection));
         findViewById(R.id.studentNextButton).setOnClickListener(v -> validateStudentDetails());
-        findViewById(R.id.backToStudentButton).setOnClickListener(v -> showSection(1));
-        findViewById(R.id.backToCategoriesButton).setOnClickListener(v -> showSection(2));
-        findViewById(R.id.backToHomeButton).setOnClickListener(v -> showSection(0));
-        findViewById(R.id.backToHomeFromStatusButton).setOnClickListener(v -> showSection(0));
+        findViewById(R.id.backToStudentButton).setOnClickListener(v -> showSection(studentSection));
+        findViewById(R.id.backToCategoriesButton).setOnClickListener(v -> showSection(categorySection));
+        findViewById(R.id.backToHomeButton).setOnClickListener(v -> showSection(homeSection));
+        findViewById(R.id.backToHomeFromStatusButton).setOnClickListener(v -> showSection(homeSection));
+        findViewById(R.id.backToHomeFromWardenButton).setOnClickListener(v -> showSection(homeSection));
+        findViewById(R.id.wardenEnterButton).setOnClickListener(v -> wardenLogin());
+        findViewById(R.id.wardenLogoutButton).setOnClickListener(v -> showSection(homeSection));
         findViewById(R.id.statusSearchButton).setOnClickListener(v -> loadStudentComplaints());
+        findViewById(R.id.wardenBackButton).setOnClickListener(v -> showSection(wardenDashboardSection));
+        findViewById(R.id.resolveComplaintButton).setOnClickListener(v -> resolveCurrentComplaint());
 
         int[] categoryButtons = {R.id.hostelOption, R.id.messOption, R.id.theftOption,
                 R.id.staffBehaviorOption, R.id.academicsOption};
@@ -52,19 +82,12 @@ public class MainActivity extends AppCompatActivity {
             findViewById(categoryButtons[i]).setOnClickListener(v -> {
                 selectedCategory = category;
                 title.setText(category);
-                showSection(3);
+                showSection(descriptionSection);
             });
         }
 
         findViewById(R.id.postButton).setOnClickListener(v -> saveStudentComplaint());
-    }
-
-    private void setupSpinner(int viewId, int arrayId) {
-        Spinner spinner = findViewById(viewId);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, arrayId,
-                android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
+        findViewById(R.id.wardenRefreshButton).setOnClickListener(v -> loadWardenComplaints());
     }
 
     private void validateStudentDetails() {
@@ -91,13 +114,13 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Select your branch and year", Toast.LENGTH_SHORT).show();
             valid = false;
         }
-        if (valid) showSection(2);
+        if (valid) showSection(categorySection);
     }
 
     private void saveStudentComplaint() {
         EditText description = findViewById(R.id.complaintDescriptionInput);
-        String details = description.getText().toString().trim();
-        if (details.isEmpty()) {
+        String complaintText = description.getText().toString().trim();
+        if (complaintText.isEmpty()) {
             description.setError("Enter complaint details");
             return;
         }
@@ -108,17 +131,15 @@ public class MainActivity extends AppCompatActivity {
                 ((Spinner) findViewById(R.id.branchSpinner)).getSelectedItem().toString(),
                 ((Spinner) findViewById(R.id.yearSpinner)).getSelectedItem().toString(),
                 ((EditText) findViewById(R.id.phoneInput)).getText().toString().trim(),
-                selectedCategory, details, System.currentTimeMillis());
-
+                selectedCategory, complaintText, System.currentTimeMillis());
         if (id == -1) {
-            Toast.makeText(this, "Could not save the complaint. Please try again.",
-                    Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Could not save complaint", Toast.LENGTH_SHORT).show();
             return;
         }
         Toast.makeText(this, "Complaint saved. Reference ID: " + id, Toast.LENGTH_LONG).show();
         description.setText("");
         selectedCategory = "";
-        showSection(0);
+        showSection(homeSection);
     }
 
     private void loadStudentComplaints() {
@@ -128,13 +149,12 @@ public class MainActivity extends AppCompatActivity {
             sapInput.setError("Enter your SAP ID");
             return;
         }
-
         LinearLayout list = findViewById(R.id.studentStatusList);
         list.removeAllViews();
         Cursor cursor = database.getStudentComplaints(sapId);
         try {
             if (!cursor.moveToFirst()) {
-                addStatusMessage(list, "No complaints found for this SAP ID.");
+                addMessage(list, "No complaints found for this SAP ID.");
                 return;
             }
             do {
@@ -143,16 +163,99 @@ public class MainActivity extends AppCompatActivity {
                 String description = cursor.getString(cursor.getColumnIndexOrThrow("description"));
                 long createdAt = cursor.getLong(cursor.getColumnIndexOrThrow("created_at"));
                 String status = cursor.getString(cursor.getColumnIndexOrThrow("status"));
-                addStatusMessage(list, "Reference #" + id + "  •  " + category + "\n" +
+                String reply = cursor.getString(cursor.getColumnIndexOrThrow("warden_reply"));
+                addMessage(list, "Reference #" + id + " • " + category + "\n" +
                         "Submitted: " + DateFormat.getDateTimeInstance().format(new Date(createdAt)) +
-                        "\nStatus: " + status + "\n" + description);
+                        "\nStatus: " + status +
+                        (reply == null || reply.isEmpty() ? "" : "\nWarden response: " + reply) +
+                        "\n" + description);
             } while (cursor.moveToNext());
         } finally {
             cursor.close();
         }
     }
 
-    private void addStatusMessage(LinearLayout list, String message) {
+    private void wardenLogin() {
+        EditText name = findViewById(R.id.wardenNameInput);
+        EditText password = findViewById(R.id.wardenPasswordInput);
+        currentWardenName = name.getText().toString().trim();
+        if (currentWardenName.isEmpty()) {
+            name.setError("Enter your name");
+            return;
+        }
+        if (!password.getText().toString().equals("warden1234")) {
+            password.setError("Incorrect password");
+            return;
+        }
+        password.setText("");
+        loadWardenComplaints();
+        showSection(wardenDashboardSection);
+    }
+
+    private void loadWardenComplaints() {
+        LinearLayout list = findViewById(R.id.wardenComplaintList);
+        list.removeAllViews();
+        Cursor cursor = database.getUnresolvedComplaints();
+        try {
+            if (!cursor.moveToFirst()) {
+                addMessage(list, "There are no pending complaints.");
+                return;
+            }
+            do {
+                long id = cursor.getLong(cursor.getColumnIndexOrThrow("id"));
+                String studentName = cursor.getString(cursor.getColumnIndexOrThrow("student_name"));
+                String category = cursor.getString(cursor.getColumnIndexOrThrow("category"));
+                Button row = new Button(this);
+                row.setText(studentName + " • " + category);
+                row.setOnClickListener(v -> openWardenComplaint(id));
+                list.addView(row);
+            } while (cursor.moveToNext());
+        } finally {
+            cursor.close();
+        }
+    }
+
+    private void openWardenComplaint(long complaintId) {
+        currentComplaintId = complaintId;
+        Cursor cursor = database.getComplaint(complaintId);
+        try {
+            if (!cursor.moveToFirst()) return;
+            String details = "Reference #" + complaintId + "\n" +
+                    "Student: " + cursor.getString(cursor.getColumnIndexOrThrow("student_name")) + "\n" +
+                    "SAP ID: " + cursor.getString(cursor.getColumnIndexOrThrow("sap_id")) + "\n" +
+                    "Branch: " + cursor.getString(cursor.getColumnIndexOrThrow("branch")) + "\n" +
+                    "Year: " + cursor.getString(cursor.getColumnIndexOrThrow("year")) + "\n" +
+                    "Phone: " + cursor.getString(cursor.getColumnIndexOrThrow("phone")) + "\n" +
+                    "Category: " + cursor.getString(cursor.getColumnIndexOrThrow("category")) + "\n\n" +
+                    cursor.getString(cursor.getColumnIndexOrThrow("description"));
+            ((TextView) findViewById(R.id.wardenComplaintDetails)).setText(details);
+            ((EditText) findViewById(R.id.wardenReplyInput)).setText("");
+            showSection(wardenDetailSection);
+        } finally {
+            cursor.close();
+        }
+    }
+
+    private void resolveCurrentComplaint() {
+        EditText replyInput = findViewById(R.id.wardenReplyInput);
+        String reply = replyInput.getText().toString().trim();
+        if (reply.isEmpty()) {
+            replyInput.setError("Enter the action taken before resolving");
+            return;
+        }
+        if (database.resolveComplaint(currentComplaintId, currentWardenName, reply,
+                System.currentTimeMillis())) {
+            Toast.makeText(this, "Complaint resolved", Toast.LENGTH_SHORT).show();
+            loadWardenComplaints();
+            showSection(wardenDashboardSection);
+        } else {
+            Toast.makeText(this, "This complaint is no longer pending", Toast.LENGTH_SHORT).show();
+            loadWardenComplaints();
+            showSection(wardenDashboardSection);
+        }
+    }
+
+    private void addMessage(LinearLayout list, String message) {
         TextView row = new TextView(this);
         row.setText(message);
         row.setTextSize(16);
@@ -161,9 +264,15 @@ public class MainActivity extends AppCompatActivity {
         list.addView(row);
     }
 
-    private void showSection(int selectedIndex) {
-        for (int i = 0; i < sections.length; i++) {
-            sections[i].setVisibility(i == selectedIndex ? View.VISIBLE : View.GONE);
-        }
+    private void showSection(LinearLayout selected) {
+        homeSection.setVisibility(View.GONE);
+        studentSection.setVisibility(View.GONE);
+        categorySection.setVisibility(View.GONE);
+        descriptionSection.setVisibility(View.GONE);
+        statusSection.setVisibility(View.GONE);
+        wardenLoginSection.setVisibility(View.GONE);
+        wardenDashboardSection.setVisibility(View.GONE);
+        wardenDetailSection.setVisibility(View.GONE);
+        selected.setVisibility(View.VISIBLE);
     }
 }
