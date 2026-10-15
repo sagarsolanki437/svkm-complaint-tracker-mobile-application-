@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 // Stores student complaints and the warden review details on this device.
 public class Database1 extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "SVKMComplaints.db";
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 5;
 
     public Database1(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -24,6 +24,7 @@ public class Database1 extends SQLiteOpenHelper {
                 "created_at INTEGER NOT NULL, status TEXT NOT NULL DEFAULT 'Pending', " +
                 "warden_name TEXT, warden_reply TEXT, resolved_at INTEGER NOT NULL DEFAULT 0)");
         createWardenSessionsTable(db);
+        createWardenLogTable(db);
     }
 
     @Override
@@ -36,12 +37,22 @@ public class Database1 extends SQLiteOpenHelper {
             db.execSQL("ALTER TABLE complaints ADD COLUMN resolved_at INTEGER NOT NULL DEFAULT 0");
         }
         if (oldVersion < 4) createWardenSessionsTable(db);
+        if (oldVersion < 5) createWardenLogTable(db);
     }
 
     private void createWardenSessionsTable(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE IF NOT EXISTS warden_sessions (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, warden_name TEXT NOT NULL, " +
                 "login_time INTEGER NOT NULL)");
+    }
+
+    private void createWardenLogTable(SQLiteDatabase db) {
+        db.execSQL("CREATE TABLE IF NOT EXISTS warden_log (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT, complaint_id INTEGER NOT NULL UNIQUE, " +
+                "warden_name TEXT, student_name TEXT NOT NULL, sap_id TEXT NOT NULL, " +
+                "branch TEXT NOT NULL, year TEXT NOT NULL, phone TEXT NOT NULL, " +
+                "category TEXT NOT NULL, description TEXT NOT NULL, complaint_date INTEGER NOT NULL, " +
+                "resolved_at INTEGER NOT NULL, warden_reply TEXT)");
     }
 
     public long saveComplaint(String name, String sapId, String branch, String year,
@@ -128,5 +139,34 @@ public class Database1 extends SQLiteOpenHelper {
         } finally {
             db.endTransaction();
         }
+    }
+
+    // Archives resolved complaints after 48 hours before removing them from active records.
+    public int archiveExpiredResolvedComplaints(long currentTime) {
+        long cutoff = currentTime - (48L * 60L * 60L * 1000L);
+        SQLiteDatabase db = getWritableDatabase();
+        db.beginTransaction();
+        try {
+            db.execSQL("INSERT OR IGNORE INTO warden_log (complaint_id, warden_name, student_name, " +
+                    "sap_id, branch, year, phone, category, description, complaint_date, resolved_at, " +
+                    "warden_reply) SELECT id, warden_name, student_name, sap_id, branch, year, phone, " +
+                    "category, description, created_at, resolved_at, warden_reply FROM complaints " +
+                    "WHERE status = 'Resolved' AND resolved_at > 0 AND resolved_at <= ?",
+                    new Object[]{cutoff});
+            int deleted = db.delete("complaints", "status = 'Resolved' AND resolved_at > 0 " +
+                            "AND resolved_at <= ? AND id IN " +
+                            "(SELECT complaint_id FROM warden_log)",
+                    new String[]{String.valueOf(cutoff)});
+            db.setTransactionSuccessful();
+            return deleted;
+        } finally {
+            db.endTransaction();
+        }
+    }
+
+    public Cursor getWardenLog(String wardenName) {
+        return getReadableDatabase().rawQuery(
+                "SELECT * FROM warden_log WHERE warden_name = ? ORDER BY resolved_at DESC",
+                new String[]{wardenName});
     }
 }

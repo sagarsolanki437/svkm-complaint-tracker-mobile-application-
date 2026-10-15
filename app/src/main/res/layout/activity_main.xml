@@ -298,6 +298,11 @@
                 android:layout_height="wrap_content"
                 android:text="Refresh" />
             <Button
+                android:id="@+id/wardenLogButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Resolved complaint history" />
+            <Button
                 android:id="@+id/wardenLogoutButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -346,6 +351,38 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Back to pending complaints" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/wardenLogSection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Resolved complaint history"
+                android:textColor="#B71C1C"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="Resolved items leave the active list after 48 hours; this history is retained."
+                android:textColor="#555555"
+                android:textSize="14sp" />
+            <LinearLayout
+                android:id="@+id/wardenLogList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+            <Button
+                android:id="@+id/wardenLogBackButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Back to dashboard" />
         </LinearLayout>
 
         <LinearLayout
