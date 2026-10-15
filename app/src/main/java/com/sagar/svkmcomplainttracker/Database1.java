@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 // Stores student complaints and the warden review details on this device.
 public class Database1 extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "SVKMComplaints.db";
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
 
     public Database1(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -23,6 +23,7 @@ public class Database1 extends SQLiteOpenHelper {
                 "phone TEXT NOT NULL, category TEXT NOT NULL, description TEXT NOT NULL, " +
                 "created_at INTEGER NOT NULL, status TEXT NOT NULL DEFAULT 'Pending', " +
                 "warden_name TEXT, warden_reply TEXT, resolved_at INTEGER NOT NULL DEFAULT 0)");
+        createWardenSessionsTable(db);
     }
 
     @Override
@@ -34,6 +35,13 @@ public class Database1 extends SQLiteOpenHelper {
         if (oldVersion < 3) {
             db.execSQL("ALTER TABLE complaints ADD COLUMN resolved_at INTEGER NOT NULL DEFAULT 0");
         }
+        if (oldVersion < 4) createWardenSessionsTable(db);
+    }
+
+    private void createWardenSessionsTable(SQLiteDatabase db) {
+        db.execSQL("CREATE TABLE IF NOT EXISTS warden_sessions (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT, warden_name TEXT NOT NULL, " +
+                "login_time INTEGER NOT NULL)");
     }
 
     public long saveComplaint(String name, String sapId, String branch, String year,
@@ -68,7 +76,37 @@ public class Database1 extends SQLiteOpenHelper {
                 "SELECT * FROM complaints WHERE id = ?", new String[]{String.valueOf(complaintId)});
     }
 
-    // Records the warden's response and resolves a pending complaint in one transaction.
+    public void recordWardenLogin(String wardenName, long loginTime) {
+        ContentValues values = new ContentValues();
+        values.put("warden_name", wardenName);
+        values.put("login_time", loginTime);
+        getWritableDatabase().insert("warden_sessions", null, values);
+    }
+
+    public long getLatestWardenLoginTime() {
+        Cursor cursor = getReadableDatabase().rawQuery(
+                "SELECT login_time FROM warden_sessions ORDER BY id DESC LIMIT 1", null);
+        try {
+            return cursor.moveToFirst() ? cursor.getLong(0) : 0;
+        } finally {
+            cursor.close();
+        }
+    }
+
+    public Cursor getAllComplaints() {
+        return getReadableDatabase().rawQuery("SELECT * FROM complaints ORDER BY id DESC", null);
+    }
+
+    public Cursor searchAllComplaints(String searchText) {
+        String search = "%" + searchText.trim() + "%";
+        return getReadableDatabase().rawQuery(
+                "SELECT * FROM complaints WHERE student_name LIKE ? COLLATE NOCASE " +
+                        "OR sap_id LIKE ? COLLATE NOCASE OR category LIKE ? COLLATE NOCASE " +
+                        "OR warden_name LIKE ? COLLATE NOCASE ORDER BY id DESC",
+                new String[]{search, search, search, search});
+    }
+
+    // Saves the warden's response and resolves a pending complaint atomically.
     public boolean resolveComplaint(long complaintId, String wardenName, String reply,
                                     long resolvedAt) {
         if (wardenName == null || wardenName.trim().isEmpty() ||
