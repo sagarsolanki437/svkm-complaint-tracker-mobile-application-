@@ -6,4 +6,12 @@
     </style>
 
     <style name="Theme.SVKMCOMPLAINTTRACKER" parent="Base.Theme.SVKMCOMPLAINTTRACKER" />
+
+    <style name="ComplaintCategoryButton" parent="Widget.Material3.Button">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:backgroundTint">#B71C1C</item>
+        <item name="android:textColor">#FFFFFF</item>
+    </style>
 </resources>

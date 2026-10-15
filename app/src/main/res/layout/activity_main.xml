@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFF8F7"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="22dp"
+            android:text="SVKM COMPLAINT TRACKER"
+            android:textColor="#B71C1C"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:id="@+id/homeSection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="How can we help you today?"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/studentOption"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:backgroundTint="#B71C1C"
+                android:text="Submit a student complaint"
+                android:textColor="#FFFFFF" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/studentSection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Student details"
+                android:textColor="#B71C1C"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/studentNameInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Full name"
+                android:inputType="textPersonName"
+                android:singleLine="true" />
+
+            <EditText
+                android:id="@+id/sapIdInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="SAP ID"
+                android:inputType="text" />
+
+            <EditText
+                android:id="@+id/phoneInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="10 digit phone number"
+                android:inputType="phone"
+                android:maxLength="10"
+                android:singleLine="true" />
+
+            <Spinner
+                android:id="@+id/branchSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <Spinner
+                android:id="@+id/yearSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <Button
+                android:id="@+id/studentNextButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:backgroundTint="#B71C1C"
+                android:text="Continue"
+                android:textColor="#FFFFFF" />
+
+            <Button
+                android:id="@+id/backToHomeButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Back" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/categorySection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Choose a complaint category"
+                android:textColor="#B71C1C"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <Button android:id="@+id/hostelOption" style="@style/ComplaintCategoryButton" android:text="Hostel" />
+            <Button android:id="@+id/messOption" style="@style/ComplaintCategoryButton" android:text="Mess" />
+            <Button android:id="@+id/theftOption" style="@style/ComplaintCategoryButton" android:text="Theft Complaint" />
+            <Button android:id="@+id/staffBehaviorOption" style="@style/ComplaintCategoryButton" android:text="Staff Behavior" />
+            <Button android:id="@+id/academicsOption" style="@style/ComplaintCategoryButton" android:text="Academics Problem" />
+
+            <Button
+                android:id="@+id/backToStudentButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Back" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/descriptionSection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/complaintTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#B71C1C"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/complaintDescriptionInput"
+                android:layout_width="match_parent"
+                android:layout_height="160dp"
+                android:gravity="top|start"
+                android:hint="Describe your complaint"
+                android:inputType="textCapSentences|textMultiLine"
+                android:padding="12dp" />
+
+            <Button
+                android:id="@+id/postButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:backgroundTint="#B71C1C"
+                android:text="Review complaint"
+                android:textColor="#FFFFFF" />
+
+            <Button
+                android:id="@+id/backToCategoriesButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Back to categories" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>
