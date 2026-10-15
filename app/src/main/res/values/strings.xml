@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">SVKM COMPLAINT TRACKER</string>
+
+    <string-array name="student_branches">
+        <item>Select Branch</item>
+        <item>B.Tech CE</item>
+        <item>B.Tech CS</item>
+        <item>B.Tech IT</item>
+        <item>B.Tech AI</item>
+        <item>M.B.Tech CE</item>
+        <item>B.Pharm</item>
+        <item>M.Pharm</item>
+    </string-array>
+
+    <string-array name="student_years">
+        <item>Select Year</item>
+        <item>First Year</item>
+        <item>Second Year</item>
+        <item>Third Year</item>
+        <item>Fourth Year</item>
+    </string-array>
+</resources>
