@@ -70,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.wardenLogoutButton).setOnClickListener(v -> showSection(homeSection));
         findViewById(R.id.statusSearchButton).setOnClickListener(v -> loadStudentComplaints());
         findViewById(R.id.wardenBackButton).setOnClickListener(v -> showSection(wardenDashboardSection));
+        findViewById(R.id.resolveComplaintButton).setOnClickListener(v -> resolveCurrentComplaint());
 
         int[] categoryButtons = {R.id.hostelOption, R.id.messOption, R.id.theftOption,
                 R.id.staffBehaviorOption, R.id.academicsOption};
@@ -228,9 +229,29 @@ public class MainActivity extends AppCompatActivity {
                     "Category: " + cursor.getString(cursor.getColumnIndexOrThrow("category")) + "\n\n" +
                     cursor.getString(cursor.getColumnIndexOrThrow("description"));
             ((TextView) findViewById(R.id.wardenComplaintDetails)).setText(details);
+            ((EditText) findViewById(R.id.wardenReplyInput)).setText("");
             showSection(wardenDetailSection);
         } finally {
             cursor.close();
+        }
+    }
+
+    private void resolveCurrentComplaint() {
+        EditText replyInput = findViewById(R.id.wardenReplyInput);
+        String reply = replyInput.getText().toString().trim();
+        if (reply.isEmpty()) {
+            replyInput.setError("Enter the action taken before resolving");
+            return;
+        }
+        if (database.resolveComplaint(currentComplaintId, currentWardenName, reply,
+                System.currentTimeMillis())) {
+            Toast.makeText(this, "Complaint resolved", Toast.LENGTH_SHORT).show();
+            loadWardenComplaints();
+            showSection(wardenDashboardSection);
+        } else {
+            Toast.makeText(this, "This complaint is no longer pending", Toast.LENGTH_SHORT).show();
+            loadWardenComplaints();
+            showSection(wardenDashboardSection);
         }
     }
 

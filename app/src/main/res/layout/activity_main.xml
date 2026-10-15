@@ -318,6 +318,23 @@
                 android:layout_marginTop="12dp"
                 android:textColor="#222222"
                 android:textSize="16sp" />
+            <EditText
+                android:id="@+id/wardenReplyInput"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:layout_marginTop="12dp"
+                android:gravity="top|start"
+                android:hint="Describe the action taken"
+                android:inputType="textCapSentences|textMultiLine"
+                android:padding="12dp" />
+            <Button
+                android:id="@+id/resolveComplaintButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:backgroundTint="#B71C1C"
+                android:text="Resolve complaint"
+                android:textColor="#FFFFFF" />
             <Button
                 android:id="@+id/wardenBackButton"
                 android:layout_width="match_parent"
