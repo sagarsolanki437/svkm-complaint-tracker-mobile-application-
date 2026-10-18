@@ -158,15 +158,15 @@ public class MainActivity extends AppCompatActivity {
         boolean valid = true;
 
         if (name.getText().toString().trim().isEmpty()) {
-            name.setError("Required");
+            name.setError("Please fill the details");
             valid = false;
         }
         if (sap.getText().toString().trim().isEmpty()) {
-            sap.setError("Required");
+            sap.setError("Please fill the details");
             valid = false;
         }
         if (phone.getText().toString().trim().length() != 10) {
-            phone.setError("Enter a 10 digit phone number");
+            phone.setError("Please Enter a 10 digit phone number");
             valid = false;
         }
         if (branch.getSelectedItemPosition() == 0 || year.getSelectedItemPosition() == 0) {
